@@ -1,4 +1,4 @@
-# todos
+# Vue-Keep
 
 > Google Keep implementation in vue.js
 
