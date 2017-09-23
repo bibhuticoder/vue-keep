@@ -1,6 +1,12 @@
-# todos
+# Vue Keep
 
-> A Vue.js project
+> Google Keep implementaion in vue.js(Vuex).
+
+## demo
+https://bibhuticoder.github.io/vue-keep/dist/
+
+## todos
+- almost everything
 
 ## Build Setup
 
