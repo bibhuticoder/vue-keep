@@ -6,10 +6,12 @@ import VueFire from 'vuefire'
 
 Vue.config.productionTip = false
 Vue.use(VueFire)
+import { store } from './store'
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   template: '<App/>',
   components: { App },
 

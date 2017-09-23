@@ -2,8 +2,8 @@
   <div>
     <div class="keep-input">
 
-      <div v-if="mode">
-        <input type="text" placeholder="Title" class="title" v-model="title" />
+      <div v-if="keepInputMode">
+        <input type="text" placeholder="Title" class="title" v-model="inputKeep.title" />
         <div class="text" ref="text" placeholder="Take a note ..." contenteditable="true"></div>
         <div class="controls">
           <button class="btn btn-default btn-sm pull-right" v-on:click="addKeep">Done</button>
@@ -13,9 +13,9 @@
       <div v-else v-on:click="inputMode">
         <p>
           Take a note ...
-          <span class="glyphicon glyphicon-pencil pull-right"></span>
-          <span class="glyphicon glyphicon-th-list pull-right"></span>
-          <span class="glyphicon glyphicon-picture pull-right"></span>
+          <span class="glyphicon glyphicon-pencil pull-right" data-toggle="tooltip" data-placement="bottom" title="Add Text"></span>
+          <span class="glyphicon glyphicon-th-list pull-right" data-toggle="tooltip" data-placement="bottom" title="Add List"></span>
+          <span class="glyphicon glyphicon-picture pull-right" data-toggle="tooltip" data-placement="bottom" title="Add Image"></span>
         </p>
       </div>
 
@@ -28,39 +28,59 @@
   export default {
     components: {},
     name: 'keep-input',
-    props:['keeps'],
     data() {
       return {
         mode: false,
-        title: "",
-        text: "",
-        list: []
+        inputKeep:{
+          title: "",
+          text: "",
+          list: []
+        }
+
       }
     },
+
+    computed:{
+      keepInputMode(){
+        return this.$store.state.keepInputMode;
+      },
+      keeps() {
+        return this.$store.getters.keeps;
+      },
+    },
+
     methods: {
       addKeep: function(){
-        this.mode = false;
-        this.text = this.$refs.text.innerHTML;
-        if(this.title !== ""){
-          this.keeps.push({
-            title: this.title,
-            text: this.text,
-            list: this.list
+        this.$store.commit('changeMode', 'input');
+        this.inputKeep.text = this.$refs.text.innerHTML;
+        if(this.inputKeep.title.length > 0 || this.inputKeep.text.length > 0){
+          this.$store.commit('addKeep', {
+            title: this.inputKeep.title,
+            text: this.inputKeep.text,
+            list: this.inputKeep.list,
+            labels: [],
+            color: "white"
           });
           this.$refs.text.innerHTML = "";
-          this.title = "";
+          this.inputKeep.title = "";
+          this.inputKeep.text = "";
         }
       },
 
       inputMode: function () {
-        this.mode=true;
-
+        this.$store.commit('changeMode', 'input');
         var self = this;
         setTimeout(function () {
           self.$refs.text.focus();
         }, 100);
 
       }
+    },
+
+    mounted: function(){
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+      })
     }
   }
 </script>
@@ -74,6 +94,7 @@
     padding: 10px;
     font-size: 15px;
     color: #3a3a3a;
+    margin: 0 auto;
   }
 
   .keep-input p{
